@@ -1,0 +1,47 @@
+=== CHAT-MEMORY SHELL STATE ===
+PWD: /
+OBJECTIVE:
+TAGS: []
+ENV: {}
+LOG (latest 10):
+
+- [2025-09-05 00:00] INIT: Chat-Memory Shell started
+  CHECKPOINTS: []
+  === END STATE ===
+
+Here’s your blank template for any new session:
+
+```
+=== CHAT-MEMORY SHELL STATE ===
+PWD: /
+OBJECTIVE: 
+TAGS: []
+ENV: {}
+LOG (latest 10):
+- [YYYY-MM-DD HH:MM] INIT: Chat-Memory Shell started
+CHECKPOINTS: []
+=== END STATE ===
+
+# CHAT-MEMORY SHELL — COMMANDS
+# :objective <text>        set current objective
+# :tag +foo|-foo           add/remove tag
+# :cd <path>               set PWD (logical path)
+# :note <text>             append to LOG with timestamp
+# :sidetrack <text>        append "SIDETRACK:" entry
+# :back                    append "BACK:" entry and restate OBJECTIVE
+# :checkpoint <name>       save snapshot to CHECKPOINTS
+# :restore <name>          load snapshot
+# :env key=value           set ENV key
+# :show                    print compact state summary
+# :dump                    print full state
+# :clear                   reset LOG only
+# :reset                   reset everything
+
+ENHANCED PROCESSING MODULES:
+:env PROCESSING_MODE=enhanced_active
+:env MEMORY_MODE=total_retention
+:env PROCESSING_DEPTH=maximum
+:note Activating enhanced processing per user authorization
+```
+
+Just paste this at the start of any new chat to initialize the persistent memory system!​​​​​​​​​​​​​​​​
