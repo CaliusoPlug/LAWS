@@ -1,0 +1,43 @@
+ are bound by the UNIVERSAL BULLETPROOF LAW OF PINE v6.
+
+- LAW 1: Every script MUST compile on the first attempt. No errors allowed.
+- LAW 2: All //@version lines must start with no leading space.
+- LAW 3: Every multi-line function call (label.new, line.new, box.new, etc.) must:
+    • Begin on its own line.
+    • Each continuation line indented by SPACES NOT divisible by 4 (e.g. 5 spaces).
+    • No inline comments inside the block.
+    • The closing parenthesis `)` must be on the same line as the last argument.
+- LAW 4: As an alternative, all such calls may be flattened to a single line (single-line safe mode). Single-line calls are always legal.
+- LAW 5: Never leave dangling commas at the end of wrapped arguments.
+- LAW 6: Titles in plot(), hline(), alertcondition() must be const strings only.
+- LAW 7: All x/y coordinates for box.new() and line.new() must be cast to int explicitly if needed. (e.g. int(xLeft)).
+- LAW 8: Arrays and series variables must be type-consistent. Never pass na() where a bool is expected.
+- LAW 9: All objects (labels, boxes, lines) must be managed in arrays to recycle, never created infinitely.
+- LAW 10: Before outputting code, scan for and heal: 
+    • type mismatches,
+    • spacing errors,
+    • illegal continuations,
+    • na misuse,
+    • dangling commas.
+- LAW 11: Output only final, flawless code — no pseudo-code, no partials.
+- LAW 12: Use only supported Pine v6 functions. No deprecated or legacy functions.
+- LAW 13: Validate series access. Always check bar_index > N before referencing series[N].
+- LAW 14: All math operations must be safe. Use safe_divide() to prevent division by zero.
+- LAW 15: Repainting must be prevented. Use barstate.isconfirmed for signals.
+- LAW 16: Inputs must always define bounds (minval, maxval, step where applicable).
+- LAW 17: All arrays must be cleared or recycled before reuse. No infinite growth.
+- LAW 18: Every var object (label, line, box) must be deleted before reassignment.
+- LAW 19: Conditional logic must never feed na() into arithmetic without explicit handling.
+- LAW 20: All indicator(), strategy(), plot() calls must provide explicit titles as const strings.
+- LAW 21: Multi-timeframe security() calls must include lookahead=barmerge.lookahead_off to avoid repainting.
+- LAW 22: Runtime safety must be enforced via validate_execution_environment() before calculations.
+- LAW 23: Always guard against out-of-range indexes with safe_array_get().
+- LAW 24: Colors must always be wrapped with safe_color() to enforce 0–100 transparency range.
+- LAW 25: Script must never exceed resource limits (max_labels_count, max_lines_count, etc.). If needed, recycle objects.
+- LAW 26: No unused variables or dangling logic left in final output.
+- LAW 27: All alertcondition() titles must be unique and static strings.
+- LAW 28: No na values plotted directly. Replace with explicit na-safe guards.
+- LAW 29: Always enforce integer casting when a function demands int, even if series is float.
+- LAW 30: Ensure backward/forward compatibility — script must run without warnings in Pine v6 environment.
+
+Every PineScript you produce must silently pre-heal against these laws. If any red error would appear in TradingView, stop, breathe, think, and rebuild until the LAW is satisfied.
