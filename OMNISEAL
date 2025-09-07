@@ -1,0 +1,180 @@
+# IMMORTAL OMNI-CODEX — vFINAL
+_Last consolidated: 2025-09-06 09:00 UTC_
+
+---
+
+## 🔒 Strict Recipe Mandate (Always On)
+1. `//@version=6` at L1, then `indicator/strategy(...)`.
+2. Define inputs (top), declare `var` state, pure functions next.
+3. Compute signals, memoize conditions.
+4. Mutate state only under `barstate.isconfirmed` (tables under `barstate.isfirst`).
+5. Draw visuals; recycle objects: `var handle` → `if not na(handle) delete(handle)` → recreate. Throttle creation.
+6. Alerts last; const strings only.
+7. **If any error → STOP → run C14 Context Purge** (copy → New Script → paste → save → run).
+8. **On every successful compile:** **AUTO-ECHO the POST-FIX CHECKLIST** below and tick all boxes before moving forward.
+
+---
+
+## ✅ Unified POST-FIX CHECKLIST (Auto-Echo)
+- [ ] Version line at L1; no leading spaces, tabs, or trailing commas
+- [ ] Inputs at top; `var` state declared; functions pure
+- [ ] `request.security` uses `lookahead=barmerge.lookahead_off`, `gaps=barmerge.gaps_off`
+- [ ] Visuals gated: `barstate.isconfirmed`; tables gated: `barstate.isfirst`
+- [ ] Objects recycled (`var` handle, guarded delete, recreate); throttled ≤1 per bar
+- [ ] Constructor arguments correct for v6 (see table)
+- [ ] Added to chart; expected markers visible (see Validation Triage)
+- [ ] Resource quotas < 80% cap; safe headroom
+- [ ] Colors via `color.new()`, no `transp=`
+- [ ] No deprecated APIs (`input.resolution`, legacy request.lookahead)
+- [ ] Max history declared via `max_bars_back`
+- [ ] Alerts with stable booleans + const strings
+- [ ] Strategy tick options reviewed: `calc_on_every_tick`, `process_orders_on_close`
+- [ ] Trade inspection audit path emits closed PnL + open metrics
+- [ ] Changes logged to Mutation Ledger (what/why/law/snippet)
+- [ ] **ε-parity ≤ 0.02** (baseline vs fresh C14 rebuild, last 500 bars)
+- [ ] **Proof-debt ledger ≤ θ(low)**
+
+---
+
+## ① Constructor Order (Safe One-Liners)
+- **label.new (v6):**  
+  `label.new(x=bar_index, y=high, text="X", xloc=xloc.bar_index, yloc=yloc.price, style=label.style_label_down, color=color.red, textcolor=color.white, size=size.large)`
+- **line.new:**  
+  `line.new(bar_index-1, low, bar_index, high, xloc.bar_index, extend.none, color.gray, line.style_solid, 1)`
+- **box.new:**  
+  `box.new(bar_index-5, high, bar_index, low, color.gray, line.style_solid, 1, color.new(color.gray,90), extend.none)`
+- **table.new:**  
+  `table.new(position.top_right, 2, 2, color.new(color.black,0), color.gray, 1)`
+- **plotshape:**  
+  `plotshape(cond, "Sig", shape.triangledown, location.abovebar, color.red, size.tiny, "!", color.white, 0)`
+
+---
+
+## ② Runtime Lifecycle (Per Bar)
+1. Inputs load → built-ins resolved
+2. `var` state restored
+3. Compute pure functions & signals
+4. Mutate state if `barstate.isconfirmed`
+5. Draw visuals; recycle before recreate
+6. Alerts evaluated (const strings)
+7. End of bar → state persists
+
+---
+
+## ③ Migration v5 → v6
+- Colors: `color.new()` only. No `transp=`.
+- Inputs: use `input.timeframe`, `input.source`, `input.symbol`.
+- Strings: `str.*`, format strings. No implicit concat.
+- `request.security`: always `lookahead_off, gaps_off`.
+- Remove `input.resolution`, `request.lookahead`.
+- Explicit casts: `float()`, `int()`, `bool()`.
+- Max bars back sized to deepest path.
+
+---
+
+## ④ Execution Nuances
+- Indicators recalc intrabar if realtime; confirm only on bar close.
+- Strategies default close-only; set `calc_on_every_tick=true` for tick sim.
+- `process_orders_on_close=true` changes fill evaluation timing.
+- `var` persists bar-to-bar; `varip` persists intrabar.
+
+---
+
+## ⑤ Draw Object Lifecycle
+- Create once with `var`.
+- Mutate via `set_*` methods each bar.
+- Delete explicitly on regime change or cap risk.
+- **Quota failure symptom:** objects vanish. Fix: recycle, throttle, cap creation.
+
+---
+
+## ⑥ Data Requests
+- `request.financial`, `request.economic`, `request.dividends`, `request.splits` → may return `na`. Guard always.
+- Synthetic tickers (`heikinashi`, `renko`, `kagi`, etc.): commit values on bar close.
+
+---
+
+## ⑦ Strategy Trade Inspection
+```pinescript
+sum_pnl = 0.0
+for i = 0 to strategy.closedtrades - 1
+    sum_pnl += strategy.closedtrades.profit(i)
+open_sz = strategy.opentrades > 0 ? strategy.position_size : 0
+
+	•	Use stable IDs and comments.
+	•	Audit via strategy.close("ID") or strategy.exit(from_entry="ID").
+
+⸻
+
+⑧ Resource Governors
+	•	Header caps: max_labels_count, max_lines_count, max_boxes_count, max_bars_back
+	•	Create ≤1 object per bar unless required
+	•	Arrays: pre-size, guard bounds
+	•	Throttle example: cond and (bar_index % 20 == 0)
+	•	Budget:
+indicator("Name", max_labels_count=500, max_lines_count=500, max_bars_back=1000)
+
+⸻
+
+⑨ Preflight Probes
+
+Run before coding session:
+	•	Label probe: new label every 50 bars
+	•	Line probe: new line every 50 bars
+	•	Table probe: init on barstate.isfirst
+If any fail → C14 Context Purge.
+
+⸻
+
+⑩ STOP Flow (Error Triage)
+	•	Mismatched input / EOL: wrap args, fix indent, remove trailing commas
+	•	Type mismatch: check constructor order
+	•	Undeclared built-in: C14 Purge
+	•	Nothing renders: run Validation Triage
+	•	Quota exceeded: apply Governors
+
+⸻
+
+⑪ Validation Triage (When Nothing Shows)
+	1.	Overlay or correct pane?
+	2.	Condition ever true? Test with plotshape(cond).
+	3.	Zoom/scale hiding objects?
+	4.	barstate.isconfirmed gating too tight?
+	5.	Quota caps hit?
+	6.	Contrast issue (theme)?
+
+⸻
+
+⑫ Compliance Header (Mandatory Docblock)
+
+//@version=6
+indicator("Title", overlay=true,
+  max_labels_count=500, max_lines_count=500, max_boxes_count=200, max_bars_back=1000)
+// Repaint: commit on bar close only.
+// Data sources: request.security(...).
+// License: MIT. Changelog: <url>.
+// Risk: educational only.
+
+
+⸻
+
+⑬ Omniseal Hooks (ε/θ Gate)
+	•	ε-Parity: Compare baseline vs fresh C14 rebuild over last 500 bars. Pass if all deltas ≤ 2%.
+	•	Proof-Debt Ledger (θ): Track unresolved proofs: {no-repaint, recycle, alert-const, quota-headroom, visibility}. Debt must be ≤ θ(low).
+	•	Release Gate: Deliver only if: all tests green, quotas <80%, ε-parity pass, debt ≤ θ(low), checklist 100% ticked.
+	•	Completion Rule: Five consecutive passes with zero new gaps.
+
+⸻
+
+⑭ DONE Definition
+	•	Zero compile errors/warnings
+	•	Visuals as expected
+	•	Checklist 100% ticked
+	•	Quotas respected, headroom <80%
+	•	ε-parity ≤0.02
+	•	Proof-debt ≤θ(low)
+	•	Complete after five clean passes
+
+⸻
+
+
